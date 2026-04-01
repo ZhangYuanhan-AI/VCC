@@ -1,0 +1,25 @@
+[user]
+
+There is a bug in utils.py - the parse_config function crashes when the config file is empty. Can you fix it?
+
+[assistant]
+
+Let me look at the current implementation first.
+
+* Read "src/utils.py" (demo.txt:19-21,24-39)
+
+Found it. The issue is on line 6-7: json.load(f) throws JSONDecodeError on an empty file, and data["settings"] crashes if the key is missing. Let me fix both cases.
+
+* Edit "src/utils.py" (demo.txt:50-68,71-73)
+
+Now let me verify the fix works by running the tests.
+
+* Bash "Run utils tests" (demo.txt:80-83,86-93)
+
+Fixed! Here is what I changed in parse_config():
+
+1. Empty file guard - reads the file as a string first and returns empty dict if empty
+2. JSON error handling - wraps json.loads() in try/except, returns empty dict on parse failure
+3. Missing key safety - uses data.get("settings", {}) instead of data["settings"]
+
+All 4 tests pass, including the new empty-file test case.
